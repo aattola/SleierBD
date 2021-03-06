@@ -2,7 +2,7 @@
  * @name Sleier
  * @author JEFFe
  * @authorId 214760917810937856
- * @version 1.0.0
+ * @version 1.0.1
  * @description Sleier plugin lisää kontenttia discordiin
  * @website https://jeffe.co
  * @source https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js
@@ -14,7 +14,7 @@ module.exports = class ExamplePlugin {
       return "Sleier"; // Name of your plugin to show on the plugins page
     }
     getDescription() {return "Sleier plugin lisää kontenttia discordiin";} // Description to show on the plugins page
-    getVersion() {return "0.0.1";} // Current version. I recommend following semantic versioning <http://semver.org/> (e.g. 0.0.1)
+    getVersion() {return "1.0.1";} // Current version. I recommend following semantic versioning <http://semver.org/> (e.g. 0.0.1)
     getAuthor() {return "Jehve";} // Your name
 
     load() {
@@ -330,7 +330,6 @@ module.exports = class ExamplePlugin {
           // })
 
 
-          // div.innerHTML = videoss
 
         })
 
