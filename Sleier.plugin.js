@@ -2,7 +2,7 @@
  * @name Sleier
  * @author JEFFe
  * @authorId 214760917810937856
- * @version 1.1.0
+ * @version 1.1.1
  * @description Sleier plugin lisää kontenttia discordiin
  * @website https://jeffe.co
  * @source https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js
@@ -12,7 +12,7 @@
 //VAIHA NÄÄ
 
 const osoite = 'https://jeffe.co' // http://localhost    https://jeffe.co
-const version = '1.1.0'
+const version = '1.1.1'
 const name = 'Sleier'
 
 // eslint-disable-next-line
@@ -186,7 +186,7 @@ function psykoosit() {
 
 class SleierPlugin {
   getName() {
-    return name // Name of your plugin to show on the plugins page
+    return "Sleier" // Name of your plugin to show on the plugins page
   }
 
   getDescription() {
@@ -194,7 +194,7 @@ class SleierPlugin {
   }
 
   getVersion() {
-    return version
+    return '1.1.1'
   }
 
   getAuthor() {
