@@ -2,12 +2,18 @@
  * @name Sleier
  * @author JEFFe
  * @authorId 214760917810937856
- * @version 1.0.8
+ * @version 1.1.0
  * @description Sleier plugin lisää kontenttia discordiin
  * @website https://jeffe.co
  * @source https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js
  * @updateUrl https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js
  */
+
+//VAIHA NÄÄ
+
+const osoite = 'https://jeffe.co' // http://localhost    https://jeffe.co
+const version = '1.1.0'
+const name = 'Sleier'
 
 // eslint-disable-next-line
 const fontCss = `
@@ -48,25 +54,16 @@ const loader = `
 </div>
 `
 
-const mainHTML = `
-  <div class="sleierHeader">
-    <img src="https://i.imgur.com/UknTZmJ.png" style="height: 35px; padding: 2px 12px;">
-  </div>
-
-  <div class="sleierRoot">
-    <div class="sleierQueue">
-    </div>
-  </div>
-`
-
 const request = require('request')
 const fs = require('fs')
 const path = require('path')
 
+let visible = true
+
 function psykoosit() {
     if (global.sleierInterval) {
       clearInterval(global.sleierInterval)
-      global.sleierSocket.removeListener('nowPlaying')
+
     }
     let members = document.querySelector('[aria-label="Members"]')
     const membersContainer = document.querySelector('.da-hiddenMembers')
@@ -86,25 +83,26 @@ function psykoosit() {
       console.log(`[SleierBD] Socket status: ${global.sleierSocket ? 'ladannut. connectaus: ' + global.sleierSocket.connected : 'ei ladannut'}`)
       return console.log('[SleierBD] Socket ei ladannut / connectannu vielä koitetaa uusiksi 2 sekunnin päästä')
     }
-  
-          const BdApi = window.BdApi
 
-        BdApi.showToast(
-          `Sleier: ${
-            global.sleierSocket.connected
-              ? 'CONNECTED'
-              : 'Eipä ollu connectattu'
-          }`,
-          { type: 'success', icon: true }
-        )
-  
-    let visible = true
+      const BdApi = window.BdApi
+
+    // BdApi.showToast(
+    //   `Sleier: ${
+    //     global.sleierSocket.connected
+    //       ? 'CONNECTED'
+    //       : 'Eipä ollu connectattu'
+    //   }`,
+    //   { type: 'success', icon: true }
+    // )
+
+
 
     const guildId = window.location.href.split('/')[4]
-    global.sleierInterval = setInterval(() => {
-      global.sleierSocket.emit('getNowPlaying', { id: guildId })
-    }, 5000)
+    // global.sleierInterval = setInterval(() => {
+    //   global.sleierSocket.emit('getNowPlaying', { id: guildId })
+    // }, 5000)
 
+    global.sleierSocket.removeListener('nowPlaying')
     global.sleierSocket.on('nowPlaying', ({ queue, playing }) => {
       console.log(queue, playing)
 
@@ -112,7 +110,7 @@ function psykoosit() {
         if (visible) {
           global.orava()
         } else {
-          updateQueue(queue, playing)
+          // updateQueue(queue, playing)
         }
       } else {
         if (!visible) {
@@ -121,116 +119,74 @@ function psykoosit() {
       }
     })
 
-    function updateQueue(queue, playing) {
-      const queueElem = document.querySelector('.sleierQueue')
-      let list
-
-      // console.log(queueElem.children, list)
-      if (queueElem.children[0]) {
-        list = Array.from(queueElem.children).map(a => a.id)
-      } else {
-        list = []
-      }
-
-      const idQueue = queue.map(i => i.id)
-
-      Array.from(queueElem.children).forEach(sonki => {
-        if (!idQueue.includes(sonki.id)) {
-          sonki.remove()
-        }
-      })
-
-      queue.forEach((song, i) => {
-        if (list.includes(song.id)) return
-
-        if (i == 0) {
-          const songDiv = document.createElement('div')
-          songDiv.id = song.id
-          songDiv.style.display = 'grid'
-          songDiv.style.gridTemplateRows = '1f'
-          songDiv.style.gridGap = '10px'
-          songDiv.style.marginBottom = '10px'
-          songDiv.style.justifyContent = 'center'
-          songDiv.innerHTML = `
-            <img style="width: 280px; border-radius: 8px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);" src="${song.thumbnail}"></img>
-            <div style="max-width: 300px; word-break: break-all; color: #eaeaea; padding-right: 5px;">
-              <h1>${song.title}</h1>
-              <p style="margin: 0; margin-top: 5px; opacity: 0.7;">Pyytäjä: ${song.requester}</p>
-            </div>
-          `
-          queueElem.appendChild(songDiv)
-        } else {
-          const songDiv = document.createElement('div')
-          songDiv.id = song.id
-          songDiv.style.display = 'grid'
-          songDiv.style.gridTemplateColumns = '100px 200px'
-          songDiv.style.gridGap = '10px'
-          songDiv.style.marginTop = '10px'
-          songDiv.innerHTML = `
-            <img style="max-width: 300px; width: 100px; border-radius: 8px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);" src="${song.thumbnail}"></img>
-            <div style="word-break: break-all; color: #eaeaea; padding-right: 5px;">
-              <h1>${song.title}</h1>
-              <p style="margin: 0; margin-top: 5px; opacity: 0.7;">Pyytäjä: ${song.requester}</p>
-            </div>
-          `
-          queueElem.appendChild(songDiv)
-        }
-      })
-    }
-
     global.orava = () => {
       members = document.querySelector('[aria-label="Members"]')
       members.style.display = visible ? 'none' : 'block'
 
       if (!visible) {
+        visible = true
+
         // poistetaa
         clearInterval(global.sleierInterval)
+        if (!document.querySelector('#sleierContainer')) {
+          // vaihto varmaan serverii
+          return
+        }
         document.querySelector('#sleierContainer').remove()
       } else {
+        visible = false
+
         // lisätää
         const cont = document.createElement('div')
         cont.id = 'sleierContainer'
         cont.innerHTML = loader
         membersContainer.appendChild(cont)
 
+
+        const mainHTML = `
+          <iframe style="height: 100%;" src="${osoite}/bd/${guildId}"></iframe>
+        `
+
         setTimeout(() => {
-          if (global.sleierSocket.connected) {
-            document.querySelector('.sleierLoader').remove()
 
-            const root = document.createElement('div')
-            root.id = 'sleierRootCreator'
-            root.innerHTML = mainHTML
-            cont.appendChild(root)
+          document.querySelector('.sleierLoader').remove()
 
-            const guildId = window.location.href.split('/')[4]
-            const channelId = window.location.href.split('/')[5]
-            console.log('IDs ', guildId, channelId)
-            const username =
-              window.ZLibrary.DiscordAPI.currentUser.discordObject.username
-            const id = window.ZLibrary.DiscordAPI.currentUser.discordObject.id
-            const avatar =
-              window.ZLibrary.DiscordAPI.currentUser.discordObject.avatar
-            const avatarURL =
-              window.ZLibrary.DiscordAPI.currentUser.discordObject.avatarURL
-            const auth = {
-              username: username,
-              id: id,
-              verified: true,
-              avatar: avatar,
-              avatarURL: avatarURL
-            }
+          const root = document.createElement('div')
+          root.id = 'sleierRootCreator'
+          root.style.height = "100%"
+          root.innerHTML = mainHTML
+          cont.appendChild(root)
 
-            console.log(auth)
+          const guildId = window.location.href.split('/')[4]
+          const channelId = window.location.href.split('/')[5]
+          console.log('IDs ', guildId, channelId)
+          const username =
+            window.ZLibrary.DiscordAPI.currentUser.discordObject.username
+          const id = window.ZLibrary.DiscordAPI.currentUser.discordObject.id
+          const avatar =
+            window.ZLibrary.DiscordAPI.currentUser.discordObject.avatar
+          const avatarURL =
+            window.ZLibrary.DiscordAPI.currentUser.discordObject.avatarURL
+          const auth = {
+            username: username,
+            id: id,
+            verified: true,
+            avatar: avatar,
+            avatarURL: avatarURL
           }
+
+          console.log(auth)
+
         }, 1000)
       }
-      visible = !visible
     }
   }
 
+
+
 class SleierPlugin {
   getName() {
-    return 'Sleier' // Name of your plugin to show on the plugins page
+    return name // Name of your plugin to show on the plugins page
   }
 
   getDescription() {
@@ -238,7 +194,7 @@ class SleierPlugin {
   }
 
   getVersion() {
-    return '1.0.8'
+    return version
   }
 
   getAuthor() {
@@ -278,26 +234,26 @@ class SleierPlugin {
         }
       ])
     } else {
-      global.BdApi.linkJS('SOCKETTI', 'https://jeffe.co/socket.io/socket.io.js')
+      global.BdApi.linkJS('SOCKETTI', osoite + '/socket.io/socket.io.js')
       global.BdApi.injectCSS('loaderCSS', loaderCss)
       global.BdApi.injectCSS('fontCSS', fontCss)
 
       global.ZLibrary.PluginUpdater.checkForUpdate(
-        this.getName(),
-        this.getVersion(),
+        name,
+        version,
         'https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js'
       )
 
       setInterval(function() {
         global.ZLibrary.PluginUpdater.checkForUpdate(
-          this.getName(),
-          this.getVersion(),
+          name,
+          version,
           'https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js'
         )
       }, 5 * 60 * 1000)
 
       setTimeout(() => {
-        global.sleierSocket = io('https://jeffe.co')
+        global.sleierSocket = io(osoite)
       }, 1500)
     }
 
@@ -307,11 +263,31 @@ class SleierPlugin {
 
 
   onSwitch(e) {
+    clearInterval(global.sleierInterval2)
     psykoosit()
+
+    const guildId = window.location.href.split('/')[4]
+    global.sleierInterval2 = setInterval(() => {
+      if (global.sleierSocket) {
+        if (global.sleierSocket.connected) {
+          global.sleierSocket.emit('getNowPlaying', { id: guildId })
+        }
+      }
+    }, 5000)
   }
 
   start() {
+    clearInterval(global.sleierInterval2)
     psykoosit()
+
+    const guildId = window.location.href.split('/')[4]
+    global.sleierInterval2 = setInterval(() => {
+      if (global.sleierSocket) {
+        if (global.sleierSocket.connected) {
+          global.sleierSocket.emit('getNowPlaying', { id: guildId })
+        }
+      }
+    }, 5000)
 
     // setTimeout(() => {
     //   console.log('WOK')
