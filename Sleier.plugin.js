@@ -2,7 +2,7 @@
  * @name Sleier
  * @author JEFFe
  * @authorId 214760917810937856
- * @version 1.1.1
+ * @version 1.1.2
  * @description Sleier plugin lisää kontenttia discordiin
  * @website https://jeffe.co
  * @source https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js
@@ -12,7 +12,7 @@
 //VAIHA NÄÄ
 
 const osoite = 'https://jeffe.co' // http://localhost    https://jeffe.co
-const version = '1.1.1'
+const version = '1.1.2'
 const name = 'Sleier'
 
 // eslint-disable-next-line
@@ -194,7 +194,7 @@ class SleierPlugin {
   }
 
   getVersion() {
-    return '1.1.1'
+    return '1.1.2'
   }
 
   getAuthor() {
@@ -243,14 +243,6 @@ class SleierPlugin {
         version,
         'https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js'
       )
-
-      setInterval(function() {
-        global.ZLibrary.PluginUpdater.checkForUpdate(
-          name,
-          version,
-          'https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js'
-        )
-      }, 5 * 60 * 1000)
 
       setTimeout(() => {
         global.sleierSocket = io(osoite)
