@@ -2,7 +2,7 @@
  * @name Sleier
  * @author JEFFe
  * @authorId 214760917810937856
- * @version 1.0.5
+ * @version 1.0.6
  * @description Sleier plugin lisää kontenttia discordiin
  * @website https://jeffe.co
  * @source https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js
@@ -141,7 +141,7 @@ function psykoosit() {
           songDiv.style.justifyContent = 'center'
           songDiv.innerHTML = `
             <img style="width: 280px; border-radius: 8px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);" src="${song.thumbnail}"></img>
-            <div style="word-break: break-all; color: #eaeaea; padding-right: 5px;">
+            <div style="max-width: 300px; word-break: break-all; color: #eaeaea; padding-right: 5px;">
               <h1>${song.title}</h1>
               <p style="margin: 0; margin-top: 5px; opacity: 0.7;">Pyytäjä: ${song.requester}</p>
             </div>
@@ -155,7 +155,7 @@ function psykoosit() {
           songDiv.style.gridGap = '10px'
           songDiv.style.marginTop = '10px'
           songDiv.innerHTML = `
-            <img style="width: 100px; border-radius: 8px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);" src="${song.thumbnail}"></img>
+            <img style="max-width: 300px; width: 100px; border-radius: 8px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);" src="${song.thumbnail}"></img>
             <div style="word-break: break-all; color: #eaeaea; padding-right: 5px;">
               <h1>${song.title}</h1>
               <p style="margin: 0; margin-top: 5px; opacity: 0.7;">Pyytäjä: ${song.requester}</p>
@@ -237,7 +237,7 @@ class SleierPlugin {
   }
 
   getVersion() {
-    return '1.0.5'
+    return '1.0.6'
   }
 
   getAuthor() {
