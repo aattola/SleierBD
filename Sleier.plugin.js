@@ -2,7 +2,7 @@
  * @name Sleier
  * @author JEFFe
  * @authorId 214760917810937856
- * @version 1.0.7
+ * @version 1.0.8
  * @description Sleier plugin lisää kontenttia discordiin
  * @website https://jeffe.co
  * @source https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js
@@ -86,6 +86,18 @@ function psykoosit() {
       console.log(`[SleierBD] Socket status: ${global.sleierSocket ? 'ladannut. connectaus: ' + global.sleierSocket.connected : 'ei ladannut'}`)
       return console.log('[SleierBD] Socket ei ladannut / connectannu vielä koitetaa uusiksi 2 sekunnin päästä')
     }
+  
+          const BdApi = window.BdApi
+
+        BdApi.showToast(
+          `Sleier: ${
+            global.sleierSocket.connected
+              ? 'CONNECTED'
+              : 'Eipä ollu connectattu'
+          }`,
+          { type: 'success', icon: true }
+        )
+  
     let visible = true
 
     const guildId = window.location.href.split('/')[4]
@@ -94,7 +106,7 @@ function psykoosit() {
     }, 5000)
 
     global.sleierSocket.on('nowPlaying', ({ queue, playing }) => {
-      // console.log(queue, playing)
+      console.log(queue, playing)
 
       if (playing) {
         if (visible) {
@@ -181,17 +193,6 @@ function psykoosit() {
         cont.innerHTML = loader
         membersContainer.appendChild(cont)
 
-        const BdApi = window.BdApi
-
-        BdApi.showToast(
-          `Sleier: ${
-            global.sleierSocket.connected
-              ? 'CONNECTED'
-              : 'Eipä ollu connectattu'
-          }`,
-          { type: 'success', icon: true }
-        )
-
         setTimeout(() => {
           if (global.sleierSocket.connected) {
             document.querySelector('.sleierLoader').remove()
@@ -237,7 +238,7 @@ class SleierPlugin {
   }
 
   getVersion() {
-    return '1.0.7'
+    return '1.0.8'
   }
 
   getAuthor() {
