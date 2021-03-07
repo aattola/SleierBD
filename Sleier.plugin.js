@@ -2,7 +2,7 @@
  * @name Sleier
  * @author JEFFe
  * @authorId 214760917810937856
- * @version 1.0.3
+ * @version 1.0.5
  * @description Sleier plugin lisää kontenttia discordiin
  * @website https://jeffe.co
  * @source https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js
@@ -63,83 +63,7 @@ const request = require('request')
 const fs = require('fs')
 const path = require('path')
 
-class SleierPlugin {
-  getName() {
-    return 'Sleier' // Name of your plugin to show on the plugins page
-  }
-
-  getDescription() {
-    return 'Sleier plugin lisää kontenttia discordiin'
-  }
-
-  getVersion() {
-    return '1.0.3'
-  }
-
-  getAuthor() {
-    return 'JEFFe'
-  }
-
-  load() {
-    if (!global.ZeresPluginLibrary) {
-      return BdApi.showConfirmationModal('Lataa lisäosa', [
-        'Lataa lisäosa joka puuttuu !!!!!!!!!!!!!!!KÄYNNISTÄ DISCORD UUSIKSI Latauksen jälkeen!!!!',
-        {
-          confirmText: 'Lataa',
-          cancelText: 'En',
-          onConfirm: () => {
-            request.get(
-              'https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js',
-              async (error, response, body) => {
-                if (error) {
-                  require('electron').shell.openExternal(
-                    'https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js'
-                  )
-                  return
-                }
-                const folder = path.join(
-                  global.BdApi.Plugins.folder,
-                  '0PluginLibrary.plugin.js'
-                )
-                // eslint-disable-next-line promise/param-names
-                await new Promise(r => {
-                  fs.writeFile(folder, body, () => {
-                    r()
-                  })
-                })
-              }
-            )
-          }
-        }
-      ])
-    } else {
-      global.BdApi.linkJS('SOCKETTI', 'https://jeffe.co/socket.io/socket.io.js')
-      global.BdApi.injectCSS('loaderCSS', loaderCss)
-      global.BdApi.injectCSS('fontCSS', fontCss)
-
-      global.ZLibrary.PluginUpdater.checkForUpdate(
-        this.getName(),
-        this.getVersion(),
-        'https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js'
-      )
-
-      setInterval(function() {
-        global.ZLibrary.PluginUpdater.checkForUpdate(
-          this.getName(),
-          this.getVersion(),
-          'https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js'
-        )
-      }, 5 * 60 * 1000)
-
-      setTimeout(() => {
-        global.sleierSocket = io('https://jeffe.co')
-      }, 1500)
-    }
-
-    return true
-  } // Called when the plugin is loaded in to memory
-
-  onSwitch(e) {
+function psykoosit() {
     if (global.sleierInterval) {
       clearInterval(global.sleierInterval)
       global.sleierSocket.removeListener('nowPlaying')
@@ -148,7 +72,20 @@ class SleierPlugin {
     const membersContainer = document.querySelector('.da-hiddenMembers')
     console.log('members', members)
 
-    if (!members) return
+    if (!members) {
+      setTimeout(() => {
+        psykoosit()
+      }, 2000);
+      return console.log('[SleierBD] Members ei löytynt koitetaa uusiksi 2 sekunnin päästä!')
+    }
+
+    if (!global.sleierSocket || !global.sleierSocket.connected) {
+      setTimeout(() => {
+        psykoosit()
+      }, 2000);
+      console.log(`[SleierBD] Socket status: ${global.sleierSocket ? 'ladannut. connectaus: ' + global.sleierSocket.connected : 'ei ladannut'}`)
+      return console.log('[SleierBD] Socket ei ladannut / connectannu vielä koitetaa uusiksi 2 sekunnin päästä')
+    }
     let visible = true
 
     const guildId = window.location.href.split('/')[4]
@@ -157,7 +94,7 @@ class SleierPlugin {
     }, 5000)
 
     global.sleierSocket.on('nowPlaying', ({ queue, playing }) => {
-      console.log(queue, playing)
+      // console.log(queue, playing)
 
       if (playing) {
         if (visible) {
@@ -288,35 +225,93 @@ class SleierPlugin {
       }
       visible = !visible
     }
-    // console.log('ONSSWITCH ', e)
+  }
 
-    // const button = `
-    //   <div class="buttonContainer-28fw2U da-buttonContainer">
-    //     <button aria-label="Open GIF picker" tabindex="0" type="button" class="buttonWrapper-1ZmCpA da-buttonWrapper button-38aScr da-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN da-grow noFocus-2C7BQj da-noFocus">
-    //       <div class="contents-18-Yxp da-contents button-3AYNKb da-button button-318s1X da-button" style="margin: 0;">
-    //         <img style="height: 26px; width: 26px; border-radius: 90px; margin-top: 5px;" src="https://cdn.discordapp.com/avatars/374563183769288706/f25f2202b6077c9bf4cd9154abb30dbe.png?size=128" alt=" " class="avatar-VxgULZ da-avatar" aria-hidden="true">
-    //       </div>
-    //     </button>
-    //   </div>
-    //   `
+class SleierPlugin {
+  getName() {
+    return 'Sleier' // Name of your plugin to show on the plugins page
+  }
 
-    // document.getElementById('OOPPEL') &&
-    //   document.getElementById('OOPPEL').remove()
-    // const frame = document.createElement('div')
-    // frame.id = 'OOPPEL'
-    // frame.innerHTML = button
+  getDescription() {
+    return 'Sleier plugin lisää kontenttia discordiin'
+  }
 
-    // const buttonz = document.querySelectorAll('.da-buttons')
+  getVersion() {
+    return '1.0.5'
+  }
 
-    // buttonz[buttonz.length - 1].appendChild(frame)
+  getAuthor() {
+    return 'JEFFe'
+  }
 
-    // document.querySelector('#OOPPEL').removeEventListener('click')
-    // document.querySelector('#OOPPEL').addEventListener('click', () => {
-    //   window.YEPCOCK()
-    // })
+  load() {
+    if (!global.ZeresPluginLibrary) {
+      return BdApi.showConfirmationModal('Lataa lisäosa', [
+        'Lataa lisäosa joka puuttuu !!!!!!!!!!!!!!!KÄYNNISTÄ DISCORD UUSIKSI Latauksen jälkeen!!!!',
+        {
+          confirmText: 'Lataa',
+          cancelText: 'En',
+          onConfirm: () => {
+            request.get(
+              'https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js',
+              async (error, response, body) => {
+                if (error) {
+                  require('electron').shell.openExternal(
+                    'https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js'
+                  )
+                  return
+                }
+                const folder = path.join(
+                  global.BdApi.Plugins.folder,
+                  '0PluginLibrary.plugin.js'
+                )
+                // eslint-disable-next-line promise/param-names
+                await new Promise(r => {
+                  fs.writeFile(folder, body, () => {
+                    r()
+                  })
+                })
+              }
+            )
+          }
+        }
+      ])
+    } else {
+      global.BdApi.linkJS('SOCKETTI', 'https://jeffe.co/socket.io/socket.io.js')
+      global.BdApi.injectCSS('loaderCSS', loaderCss)
+      global.BdApi.injectCSS('fontCSS', fontCss)
+
+      global.ZLibrary.PluginUpdater.checkForUpdate(
+        this.getName(),
+        this.getVersion(),
+        'https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js'
+      )
+
+      setInterval(function() {
+        global.ZLibrary.PluginUpdater.checkForUpdate(
+          this.getName(),
+          this.getVersion(),
+          'https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js'
+        )
+      }, 5 * 60 * 1000)
+
+      setTimeout(() => {
+        global.sleierSocket = io('https://jeffe.co')
+      }, 1500)
+    }
+
+    return true
+  } // Called when the plugin is loaded in to memory
+
+
+
+  onSwitch(e) {
+    psykoosit()
   }
 
   start() {
+    psykoosit()
+
     // setTimeout(() => {
     //   console.log('WOK')
     //   if (!global.ZeresPluginLibrary) return
