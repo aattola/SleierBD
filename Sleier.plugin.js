@@ -2,7 +2,7 @@
  * @name Sleier
  * @author JEFFe
  * @authorId 214760917810937856
- * @version 1.0.6
+ * @version 1.0.7
  * @description Sleier plugin lisää kontenttia discordiin
  * @website https://jeffe.co
  * @source https://raw.githubusercontent.com/jeffeeeee/SleierBD/main/Sleier.plugin.js
@@ -113,7 +113,7 @@ function psykoosit() {
       const queueElem = document.querySelector('.sleierQueue')
       let list
 
-      console.log(queueElem.children, list)
+      // console.log(queueElem.children, list)
       if (queueElem.children[0]) {
         list = Array.from(queueElem.children).map(a => a.id)
       } else {
@@ -237,7 +237,7 @@ class SleierPlugin {
   }
 
   getVersion() {
-    return '1.0.6'
+    return '1.0.7'
   }
 
   getAuthor() {
